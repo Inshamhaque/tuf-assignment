@@ -4,22 +4,29 @@ import axios from 'axios';
 import { Addflashcard } from './AddFlashcard';
 import { UpdateFlashcard } from './UpdateFlashCard';
 
-export const Flashcards = () => {
-    const { topic } = useParams(); 
-    const [flashcards, setFlashcards] = useState([]);
+interface Flashcard {
+    id: number;
+    question: string;
+    answer: string;
+}
+
+export const Flashcards: React.FC = () => {
+    const { topic } = useParams<{ topic: string }>(); 
+    const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [togglePopup, setTogglePopup] = useState(false);
-    const [selectedFlashcard, setSelectedFlashcard] = useState(null);
+    const [selectedFlashcard, setSelectedFlashcard] = useState<Flashcard | null>(null);
 
     useEffect(() => {
         const fetchFlashcards = async () => {
             try {
-                const response = await axios.get(`https://backend-final-2-2jx8.onrender.com/api/user/flashcard/${topic}`);
+                const response = await axios.get<{ flashcards: Flashcard[] }>(`https://backend-final-2-2jx8.onrender.com/api/user/flashcard/${topic}`);
                 setFlashcards(response.data.flashcards);
                 setLoading(false);
             } catch (e) {
                 setError(true);
+                setLoading(false);
             }
         };
         fetchFlashcards();
@@ -28,7 +35,7 @@ export const Flashcards = () => {
     return (
         <div className="flex flex-col w-screen h-screen p-3 bg-gray-900">
             <div className='flex flex-col gap-5 text-2xl mb-5 font-semibold text-slate-300'>
-                <div>FLASHCARDS FOR {topic.toUpperCase()}</div>
+                <div>FLASHCARDS FOR {topic?.toUpperCase()}</div>
             </div>
             {loading && <div className="text-center text-lg font-semibold text-gray-300">Loading...</div>}
             {error && <div className="text-center text-red-400 font-semibold">Error fetching flashcards</div>}
@@ -44,9 +51,9 @@ export const Flashcards = () => {
                         <Addflashcard onClose={() => setTogglePopup(false)} />
                     )}
                     <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                        {flashcards.map((flashcard, index) => (
+                        {flashcards.map((flashcard) => (
                             <div
-                                key={index}
+                                key={flashcard.id}
                                 className="block max-w-sm p-6 bg-gray-800 border border-gray-700 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105"
                             >
                                 <h5 className="mb-2 text-md font-bold tracking-tight text-gray-100">

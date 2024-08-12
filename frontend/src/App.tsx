@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Flashcards } from './pages/flashcards';
 import { Admin } from './pages/admin';

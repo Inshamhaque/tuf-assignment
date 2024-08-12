@@ -2,21 +2,25 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Addtopic } from './admin/Addtopics';
 
+interface Topic {
+    title: string;
+}
+
 export const Topics = () => {
-    const [topics, setTopics] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-    const [togglePopup, setTogglePopup] = useState(false);
+    const [topics, setTopics] = useState<Topic[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
+    const [togglePopup, setTogglePopup] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await axios.get('https://backend-final-2-2jx8.onrender.com/api/user/bulk');
+                const response = await axios.get<{ topics: Topic[] }>('https://backend-final-2-2jx8.onrender.com/api/user/bulk');
                 setTopics(response.data.topics);
                 setLoading(false);
             } catch (e) {
                 setError(true);
-            } 
+            }
         };
         fetchTopics();
     }, []);
