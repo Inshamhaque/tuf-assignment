@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String
+  password String
+}
+
+model Flashcard {
+  id       Int    @id @default(autoincrement())
+  question String @unique
+  answer   String
+  topicId  Int?
+  topic    Topic? @relation(fields: [topicId], references: [id])
+
+  @@index([topicId], map: "Flashcard_topicId_fkey")
+}
+
+model Topic {
+  id         Int         @id @default(autoincrement())
+  title      String      @unique
+  flashcards Flashcard[]
+}
